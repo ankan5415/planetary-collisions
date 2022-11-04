@@ -1,7 +1,7 @@
 const canvasX = 500,
   canvasY = 500;
 const planarOffset = 50;
-const gravitationConstant = 10;
+const gravitationConstant = 5;
 class Sphere {
   constructor(x, y, r, m, vX, vY, color) {
     this.color = color;
@@ -44,21 +44,28 @@ class Sphere {
       const angle = angleBetweenPos(this.position, sphere.position);
       //     Get x and y vectors of acceleration using sine and cosine with angle
       const acc_x =
-        (gravitationConstant * -sin(angle) * sphere.mass) /
-        (distance * distance);
-      const acc_y =
         (gravitationConstant * -cos(angle) * sphere.mass) /
         (distance * distance);
+      const acc_y =
+        (gravitationConstant * -sin(angle) * sphere.mass) /
+        (distance * distance);
       this.acceleration.add(new p5.Vector(acc_x, acc_y));
-      const viewAcc = new p5.Vector(-cos(angle) * 25, -sin(angle) * 25);
-      drawArrow(this.position, p5.Vector.add(this.position, viewAcc), "black");
+      // const viewAccX = new p5.Vector(-cos(angle) * 25, 0);
+      // const viewAccY = new p5.Vector(0, -sin(angle) * 25);
+      // drawArrow(this.position, p5.Vector.add(this.position, viewAccX), "red");
+      // drawArrow(this.position, p5.Vector.add(this.position, viewAccY), "red");
     });
-    // console.log(this.acceleration.x, this.acceleration.y)
+  }
 
-    // console.log(acceleration)
-
-    //     Add up acceleration vectors for all spheres
-    //     Update velocity with acceleration
+  drawVelocity() {
+    drawArrow(
+      this.position,
+      p5.Vector.add(
+        this.position,
+        p5.Vector.mult(this.velocity, new p5.Vector(5, 5))
+      ),
+      "black"
+    );
   }
 
   update() {
@@ -68,6 +75,7 @@ class Sphere {
     this.computeAcceleration();
     this.velocity.add(this.acceleration);
     this.acceleration.set(0, 0);
+    this.drawVelocity();
   }
 
   checkCollision() {
@@ -94,13 +102,15 @@ const planet1 = new Sphere(
   20,
   30,
   0,
-  -1,
+  0,
   "yellow"
 );
-const planet2 = new Sphere(canvasX / 2 - planarOffset, 30, 20, 30, 0, 1, "red");
+const planet2 = new Sphere(canvasX / 2 - planarOffset, 30, 20, 30, 0, 0, "red");
+// const planet3 = new Sphere(30, canvasY / 2, 20, 30, 0, 0, "blue");
 
 planet1.addSpheres([planet2]);
 planet2.addSpheres([planet1]);
+// planet3.addSpheres([planet1, planet2]);
 function setup() {
   angleMode(DEGREES);
   createCanvas(canvasX, canvasY);
@@ -113,6 +123,8 @@ function draw() {
   planet1.display();
   planet2.update();
   planet2.display();
+  // planet3.update();
+  // planet3.display();
   fill("black");
   textSize(20);
   text(
