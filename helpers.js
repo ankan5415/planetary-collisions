@@ -1,13 +1,23 @@
-function drawArrow(base, vec, myColor) {
-  push();
-  stroke(myColor);
-  strokeWeight(3);
-  fill(myColor);
-  line(base.x, base.y, vec.x, vec.y);
-  pop();
-}
+function computeColor() {
+  let red = random(255);
+  let green = random(255);
+  let blue = random(255);
 
-function angleBetweenPos(pos1, pos2) {
-  const res = p5.Vector.sub(pos1, pos2);
-  return atan2(res.y, res.x);
+  let brightness = Math.sqrt(
+    0.241 * Math.pow(red, 2) +
+      0.691 * Math.pow(green, 2) +
+      0.068 * Math.pow(blue, 2)
+  );
+
+  while (brightness < 100) {
+    red = random(255);
+    green = random(255);
+    blue = random(255);
+    brightness = Math.sqrt(
+      0.241 * Math.pow(red, 2) +
+        0.691 * Math.pow(green, 2) +
+        0.068 * Math.pow(blue, 2)
+    );
+  }
+  return color(red, green, blue);
 }
