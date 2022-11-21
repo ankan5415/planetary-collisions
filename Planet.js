@@ -21,6 +21,19 @@ class Planet {
     this.y += this.v.y;
   }
 
+  collide(other_object) {
+    this.collided = true;
+    // mv2 = mv2
+    const thisM = createVector(this.v.x * this.mass, this.v.y * this.mass);
+    const otherM = createVector(
+      other_object.v.x * other_object.mass,
+      other_object.v.y * other_object.mass
+    );
+    this.mass += other_object.mass;
+    const sumM = p5.Vector.add(thisM, otherM);
+    this.velocity = createVector(sumM.x / this.mass, sumM.y / this.mass);
+  }
+
   calculate_force_with(other_object) {
     //use gravity equation to find x and y force components with other object
     var distance = Math.sqrt(
